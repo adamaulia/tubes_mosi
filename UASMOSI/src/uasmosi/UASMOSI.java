@@ -40,8 +40,8 @@ public class UASMOSI {
         //847
         //604
         int kolom = 3;
-        int baris_tes = 518;
-        int kolom_tes = 7;
+        int baris_tes = 60;
+        int kolom_tes = 3;
         double error = 0;
         double error2 = 0;
         double MSE = 0;
@@ -50,7 +50,7 @@ public class UASMOSI {
         String[][] train = new String[kolom][baris];
         String[][] testing = new String[kolom_tes][baris_tes];
         double[][] test = new double[kolom_tes][baris_tes];
-        int maxEpoch = 500;
+        int maxEpoch = 100;
         int epoch = 0;
         double x1, x2, target; //buat input summing function    
         double x1_input, x2_input, x3_input;
@@ -224,6 +224,119 @@ public class UASMOSI {
             MSE =0;
             error2=0;
         }
+        
+        
+        //testing
+        try {
+            //data training
+
+            Workbook w = Workbook.getWorkbook(new File("D:\\don't open\\semester 6\\mosi\\tubes mosi new\\table 2003.xls"));
+            Sheet sh = w.getSheet(4);
+
+            for (int i = 0; i < kolom_tes; i++) {
+                for (int j = 0; j < baris_tes; j++) {
+                    Cell c = sh.getCell(i, j);
+                    String isi = c.getContents();
+                    test[i][j] = Double.parseDouble(isi);
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(UASMOSI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BiffException ex) {
+            Logger.getLogger(UASMOSI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //find max baris 1
+        max1 = test[0][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[0][i] > max1) {
+                max1 = test[0][i];
+            }
+
+        }
+        //find min baris 1
+        min1 = test[0][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[0][i] < min1) {
+                min1 = test[0][i];
+            }
+
+        }
+
+        //find max baris 2
+        max2 = test[1][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[1][i] > max2) {
+                max2 = test[1][i];
+            }
+
+        }
+        //find min baris 2
+        min2 = test[1][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[1][i] < min2) {
+                min2 = test[1][i];
+            }
+
+        }
+
+        //find max baris 3
+        max3 = test[2][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[2][i] > max3) {
+                max3 = test[2][i];
+            }
+
+        }
+        //find min baris 3
+        min3 = test[2][0];
+        for (int i = 0; i < baris_tes; i++) {
+            if (test[2][i] < min3) {
+                min3 = test[2][i];
+            }
+
+        }
+        
+        //normalisasi baris 1
+        for (int i = 0; i < baris_tes; i++) {
+            test[0][i] = (2 * test[0][i] - (max1 + min1)) / (max1 + min1);
+        }
+        //normalisasi baris 2
+        for (int i = 0; i < baris_tes; i++) {
+            test[1][i] = (2 * test[1][i] - (max2 + min2)) / (max2 + min2);
+        }
+        //normalisasi baris 2
+        for (int i = 0; i < baris_tes; i++) {
+            test[2][i] = (2 * test[2][i] - (max3 + min3)) / (max3 + min3);
+        }
+        
+        double benar=0; 
+        for (int i = 0; i < baris_tes; i++) {
+            x1_input = test[0][i];
+            x2_input = test[1][i];
+            target = test[2][i];
+            
+            double temp = 0;
+            for (int j = 0; j < hn; j++) {
+                y[j] = x1_input * w1[j] + x2_input * w2[j] + b[j]; //summing function hidden
+                yy[j] = 1 / (1 + (Math.exp(-y[j]))); //aktifasi sigmoid hidden
+                temp = yy[j] * Woutput[j] + temp;  //summing ke output 
+            }
+            
+            y2 = temp + boutput; //summing function output
+            output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
+            error = Math.abs(target - output);
+            error2=error2 + Math.pow(error, 2);
+            
+            if((target-output)<MSE){
+                benar++;
+            }
+        }
+            MSE=error2/baris_tes;
+            double akurasi = (benar/baris_tes)*100;
+            double akurasi2 = (1-Math.sqrt(MSE))*100;
+            System.out.println(" akurasi "+akurasi);
+        
     }
 
 }
