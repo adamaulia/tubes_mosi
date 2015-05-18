@@ -50,7 +50,7 @@ public class UASMOSI {
         String[][] train = new String[kolom][baris];
         String[][] testing = new String[kolom_tes][baris_tes];
         double[][] test = new double[kolom_tes][baris_tes];
-        int maxEpoch = 100;
+        int maxEpoch = 500;
         int epoch = 0;
         double x1, x2, target; //buat input summing function    
         double x1_input, x2_input, x3_input;
@@ -199,7 +199,7 @@ public class UASMOSI {
                 error = target - output;
                 error2 = error2 + Math.pow(error, 2);
                 
-                
+               // System.out.println("target "+target+" output "+output);
                     for (int j = 0; j < hn; j++) { //hidden dw, bias , woutput , bias output
                     dw1[j]=error*(1-(Math.pow(output, 2))) * Woutput[j] * (1-(Math.pow(yy[j],2)))*x1*alpha; // error * output^2 * bobot hidden ke ouput neuron i * output hidden neuron ke i ^ 2 * input * alpha
                     dw2[j]=error*(1-(Math.pow(output, 2))) * Woutput[j] * (1-(Math.pow(yy[j],2)))*x2*alpha;
@@ -217,7 +217,10 @@ public class UASMOSI {
                     
                 }
                     boutput= db2 + boutput;
+                    
+                    
             }
+            
             MSE = error2/baris;
             System.out.println((epoch+1)+" MSE : "+MSE);
             epoch ++;
@@ -325,14 +328,26 @@ public class UASMOSI {
             
             y2 = temp + boutput; //summing function output
             output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
+            if(output<=0.5){
+                output=0;
+            }if(output>0.5){
+                output=1;
+            }
+            if(target<=0.5){
+                target=0;
+            }if(target>0.5){
+                target=1;
+            }
+            
             error = Math.abs(target - output);
             error2=error2 + Math.pow(error, 2);
-            
-            if((target-output)<MSE){
+            System.out.println(" target "+target+" output "+output);
+            if(target==output){
                 benar++;
             }
         }
             MSE=error2/baris_tes;
+            System.out.println("benar "+benar);
             double akurasi = (benar/baris_tes)*100;
             double akurasi2 = (1-Math.sqrt(MSE))*100;
             System.out.println(" akurasi "+akurasi);
