@@ -35,7 +35,7 @@ public class UASMOSI {
         double[] b = new double[hn]; //bias hidden
         double output = 0; //output 
         double boutput; //bias output
-        int baris = 600;
+        int baris = 420;
         //1210
         //847
         //604
@@ -60,8 +60,8 @@ public class UASMOSI {
         try {
             //data training
 
-            Workbook w = Workbook.getWorkbook(new File("D:\\don't open\\semester 6\\mosi\\tubes mosi new\\table 2003.xls"));
-            Sheet sh = w.getSheet(3);
+            Workbook w = Workbook.getWorkbook(new File("D:\\don't open\\semester 6\\mosi\\tubes mosi new\\table 2003 fix.xls"));
+            Sheet sh = w.getSheet(1);
 
             for (int i = 0; i < kolom; i++) {
                 for (int j = 0; j < baris; j++) {
@@ -195,10 +195,23 @@ public class UASMOSI {
                 }
 
                 y2 = temp + boutput; //summing function output
-                output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
+                //output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
+//                error = target - output;
+//                error2 = error2 + Math.pow(error, 2);
+//                if (output <= 0.5) {
+//                    output = 0;
+//                }
+//                if (output > 0.5) {
+//                    output = 1;
+//                }
+//                if (target <= 0.5) {
+//                    target = 0;
+//                }
+//                if (target > 0.5) {
+//                    target = 1;
+//                }
                 error = target - output;
                 error2 = error2 + Math.pow(error, 2);
-                
                // System.out.println("target "+target+" output "+output);
                     for (int j = 0; j < hn; j++) { //hidden dw, bias , woutput , bias output
                     dw1[j]=error*(1-(Math.pow(output, 2))) * Woutput[j] * (1-(Math.pow(yy[j],2)))*x1*alpha; // error * output^2 * bobot hidden ke ouput neuron i * output hidden neuron ke i ^ 2 * input * alpha
@@ -233,8 +246,8 @@ public class UASMOSI {
         try {
             //data training
 
-            Workbook w = Workbook.getWorkbook(new File("D:\\don't open\\semester 6\\mosi\\tubes mosi new\\table 2003.xls"));
-            Sheet sh = w.getSheet(4);
+            Workbook w = Workbook.getWorkbook(new File("D:\\don't open\\semester 6\\mosi\\tubes mosi new\\table 2003 fix.xls"));
+            Sheet sh = w.getSheet(2);
 
             for (int i = 0; i < kolom_tes; i++) {
                 for (int j = 0; j < baris_tes; j++) {
@@ -327,7 +340,7 @@ public class UASMOSI {
             }
             
             y2 = temp + boutput; //summing function output
-            output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
+            //output = 1 / (1 + (Math.exp(-y2))); //aktifasi sigmoid output
             if(output<=0.5){
                 output=0;
             }if(output>0.5){
